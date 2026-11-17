@@ -1,0 +1,35 @@
+const TECH_COLORS: Record<string, string> = {
+  TypeScript: "#3178C6",
+  JavaScript: "#F7DF1E",
+  NestJS: "#E0234E",
+  "Node.js": "#5FA04E",
+  Express: "#94A3B8",
+  BullMQ: "#F59E0B",
+  "Socket.IO": "#CBD5E1",
+  JWT: "#D63AFF",
+  RBAC: "#22D3EE",
+  "Next.js": "#E2E8F0",
+  React: "#61DAFB",
+  "React Native": "#61DAFB",
+  Angular: "#DD0031",
+  "Redux Toolkit": "#764ABC",
+  PostgreSQL: "#4169E1",
+  TypeORM: "#F97316",
+  Redis: "#DC382D",
+  MongoDB: "#47A248",
+  pgvector: "#818CF8",
+  "OpenAI API": "#10A37F",
+  "Gemini API": "#8AB4F8",
+  "LangChain.js": "#2DD4BF",
+  RAG: "#A78BFA",
+  "AI/LLM": "#A78BFA",
+  Docker: "#2496ED",
+  "AWS S3": "#FF9900",
+  "AWS EC2": "#FF9900",
+  "GitHub Actions": "#2088FF",
+  Jest: "#C21325",
+};
+
+export function techColor(name: string, fallback = "#22D3EE"): string {
+  return TECH_COLORS[name] ?? fallback;
+}
