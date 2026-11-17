@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 11 17 32;
+  --surface: 15 23 42;
+  --fg: 241 245 249;
+  --muted: 148 163 184;
+  --subtle: 122 136 158;
+  --accent: 34 211 238;
+  --live: 52 211 153;
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.2);
+  --hl: rgba(255, 255, 255, 0.07);
+  --g1: #22d3ee;
+  --g2: #60a5fa;
+  --g3: #818cf8;
+  --orb: 0.18;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: 248 250 252;
+  --surface: 255 255 255;
+  --fg: 15 23 42;
+  --muted: 71 85 105;
+  --subtle: 100 116 139;
+  --accent: 8 145 178;
+  --live: 5 150 105;
+  --line: rgba(15, 23, 42, 0.1);
+  --line-strong: rgba(15, 23, 42, 0.22);
+  --hl: rgba(255, 255, 255, 0.9);
+  --g1: #0891b2;
+  --g2: #2563eb;
+  --g3: #4f46e5;
+  --orb: 0.1;
+  color-scheme: light;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 7rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-bg font-sans text-fg antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  ::selection {
+    background: rgb(var(--accent) / 0.3);
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Frosted glass surface used by the palette, toast, and any plain card. */
+  .card {
+    @apply rounded-xl border border-line backdrop-blur-xl transition-colors duration-150 ease-out;
+    background: rgb(var(--surface) / 0.8);
+    box-shadow: inset 0 1px 0 var(--hl);
+  }
+
+  /* Glass card with a cursor-tracking glow: --mx / --my are written by SpotlightCard. */
+  .spotlight-card {
+    position: relative;
+    isolation: isolate;
+    border-radius: 0.75rem;
+    border: 1px solid var(--line);
+    background: rgb(var(--surface) / 0.5);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    box-shadow: inset 0 1px 0 var(--hl);
+    transition: transform 150ms ease-out, border-color 150ms ease-out, background-color 150ms ease-out,
+      box-shadow 150ms ease-out;
+  }
+  .spotlight-card:hover {
+    transform: translateY(-2px);
+    border-color: rgb(var(--accent) / 0.4);
+    background: rgb(var(--surface) / 0.7);
+    box-shadow: inset 0 1px 0 var(--hl), 0 14px 44px -18px rgb(var(--accent) / 0.4);
+  }
+  .spotlight-card::before,
+  .spotlight-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 150ms ease-out;
+  }
+  .spotlight-card::before {
+    z-index: -1;
+    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgb(var(--accent) / 0.1), transparent 65%);
+  }
+  .spotlight-card::after {
+    padding: 1px;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgb(var(--accent) / 0.85), transparent 65%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+  }
+  .spotlight-card:hover::before,
+  .spotlight-card:hover::after,
+  .spotlight-card:focus-within::before,
+  .spotlight-card:focus-within::after {
+    opacity: 1;
+  }
+
+  .tag {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-fg/[0.04] px-2.5 py-0.5 font-mono text-[11px] leading-5 text-muted;
+  }
+  .btn {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium transition-colors duration-150 ease-out;
+  }
+  .btn-ghost {
+    @apply btn border border-line bg-surface/40 text-fg backdrop-blur-md hover:border-accent/40 hover:bg-surface/70;
+  }
+  .icon-btn {
+    @apply inline-flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-surface/40 text-muted backdrop-blur-md transition-colors duration-150 ease-out hover:border-accent/40 hover:text-fg;
+  }
+  .section-label {
+    @apply font-mono text-xs uppercase tracking-[0.14em] text-accent;
+  }
+  .kbd {
+    @apply inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded border border-line bg-fg/5 px-1 font-mono text-[10px] text-muted;
+  }
+
+  /* Primary CTA: gradient border, soft glow, shimmer on hover. */
+  .btn-glow {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid transparent;
+    color: rgb(var(--fg));
+    background:
+      linear-gradient(rgb(var(--surface)), rgb(var(--surface))) padding-box,
+      linear-gradient(120deg, #06b6d4, #3b82f6, #8b5cf6) border-box;
+    box-shadow: 0 8px 28px -10px rgb(59 130 246 / 0.55);
+    transition: box-shadow 150ms ease-out;
+  }
+  .btn-glow:hover {
+    box-shadow: 0 10px 36px -8px rgb(34 211 238 / 0.55);
+  }
+  .btn-glow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(110deg, transparent 30%, rgb(var(--accent) / 0.22) 50%, transparent 70%);
+    transform: translateX(-120%);
+  }
+  .btn-glow:hover::after {
+    transform: translateX(120%);
+    transition: transform 700ms ease-out;
+  }
+
+  .text-gradient {
+    background-image: linear-gradient(90deg, var(--g1), var(--g2), var(--g3));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Page atmosphere: indigo, cyan, and violet glows on midnight slate. */
+  .ambient {
+    position: fixed;
+    inset: 0;
+    z-index: -20;
+    pointer-events: none;
+    background:
+      radial-gradient(640px circle at 12% 2%, rgb(59 130 246 / var(--orb)), transparent 62%),
+      radial-gradient(560px circle at 88% 8%, rgb(139 92 246 / var(--orb)), transparent 62%),
+      radial-gradient(760px circle at 50% 100%, rgb(6 182 212 / var(--orb)), transparent 65%);
+  }
+}
